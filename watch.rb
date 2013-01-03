@@ -11,18 +11,24 @@ require 'fileutils'
 
 # Changelog: 
 # * 02/01/2013 - v0.1
+# * 03/01/2013 - Added functionality for list of files.
 
 # Helpers
 def proper_files(l)
   l.delete_if {|f| f[0,1] == "."}
 end 
 
-def mark_watched(fn)
-  FileUtils.chmod "+t", fn
+def chmod_list(list, flags)
+  list.map { |f| FileUtils.chmod flags, f }
 end
 
-def mark_unwatched(fn)
-  FileUtils.chmod "-t", fn
+# Functions to be called by the user
+def mark_watched(fns)
+  chmod_list fns, "+t" 
+end
+
+def mark_unwatched(fns)
+  chmod_list fns, "-t"
 end
 
 def list_watched
@@ -39,11 +45,11 @@ end
 def handle_args(args)
   case
     # Mark as watched
-    when args.length == 2 && args[0] == "-w" 
-      then mark_watched args[1] 
+    when args.length >= 2 && args[0] == "-w" 
+      then mark_watched args[1..-1] 
     # Unmark watched movie
-    when args.length == 2 && args[0] == "-u" 
-      then mark_unwatched args[1]
+    when args.length >= 2 && args[0] == "-u" 
+      then mark_unwatched args[1..-1]
     # List watched movies
     when args.length == 1 && args[0] == "-lw" 
       then list_watched
@@ -55,13 +61,13 @@ def handle_args(args)
 end
 
 def usage
-  puts "#{$0} -w <move name>"
-  puts "marks the move as watched.\n\n"
-  puts "#{$0} -u <move name>"
-  puts "marks the move as unwatched.\n\n"
-  puts "#{0} -lw"
+  puts "#{$0} -w <movie names>"
+  puts "marks the movies as watched.\n\n"
+  puts "#{$0} -u <movie names>"
+  puts "marks the movies as unwatched.\n\n"
+  puts "#{$0} -lw"
   puts "list all watched movies.\n\n"
-  puts "#{0} -lu"
+  puts "#{$0} -lu"
   puts "list alle unwatched movies."
 end
 
