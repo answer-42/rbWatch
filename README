@@ -1,0 +1,12 @@
+A small programme to mark movies/songs or whatever and unmark. It can also
+list marked or unmarked files. So you can work more efficiently.
+
+To install, just put watch.rb into ypur PATH and if you call it without
+arguments you will get the usage message.
+
+Written by Sebastian Benque and published under the Beer-Ware Licence:
+
+"THE BEER-WARE LICENSE" (Revision 42):
+<sebastian.benque@gmail.com> wrote this file. As long as you retain this notice you
+can do whatever you want with this stuff. If we meet some day, and you think
+this stuff is worth it, you can buy me a beer in return Sebastian Benuqe
