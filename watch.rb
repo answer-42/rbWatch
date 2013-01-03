@@ -14,15 +14,27 @@ require 'fileutils'
 # * 03/01/2013 - Added functionality for list of files.
 
 # Helpers
+###
+
+# Remove all files from the list l that are hidden files(".*"), upper dir (..)
+# or current directory (".").
 def proper_files(l)
-  l.delete_if {|f| f[0,1] == "."}
+  l.delete_if { |f| f[0,1] == "." }
 end 
 
+# Apply the flags with chmod to all files in the list.
 def chmod_list(list, flags)
   list.map { |f| FileUtils.chmod flags, f }
 end
 
+# Create a list of all files in the current working directory, that are
+# proper(following the definition in the function proper_files).
+def files
+  proper_files(Dir.entries(Dir.pwd))
+end
+
 # Functions to be called by the user
+###
 def mark_watched(fns)
   chmod_list fns, "+t" 
 end
@@ -32,16 +44,15 @@ def mark_unwatched(fns)
 end
 
 def list_watched
-  puts proper_files(Dir.entries(Dir.pwd))
-    .delete_if {|f| not File.stat(f).sticky? }
+  puts files.delete_if { |f| not File.stat(f).sticky? }
 end
 
 def list_unwatched
-   puts proper_files(Dir.entries(Dir.pwd))
-    .delete_if {|f| File.stat(f).sticky? }
+   puts files.delete_if { |f| File.stat(f).sticky? }
 end
 
 # Control Structures
+###
 def handle_args(args)
   case
     # Mark as watched
@@ -72,5 +83,7 @@ def usage
 end
 
 # Main
+###
+
 handle_args(ARGV)
 
