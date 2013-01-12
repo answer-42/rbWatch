@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 require 'fileutils'
+require 'rainbow'
+require 'filemagic'
 
 # "THE BEER-WARE LICENSE" (Revision 42):
 # <sebastian.benque@gmail.com> wrote this file. As long as you retain this notice you
@@ -12,6 +14,18 @@ require 'fileutils'
 # Changelog: 
 # * 02/01/2013 - v0.1
 # * 03/01/2013 - Added functionality for list of files.
+# * 12/01/2013 - Added colorfull output.
+
+# Config
+###
+
+$media_types = ['avi', 'audio', 'mpeg', 'mp3']
+$text_types  = ['latex', 'text']
+
+def puts_dir(n)   puts n.color :white end
+def puts_media(n) puts n.color :red end
+def puts_pdf(n)   puts n.color :blue end
+def puts_text(n)  puts n.color :magenta end
 
 # Helpers
 ###
@@ -33,6 +47,25 @@ def files
   proper_files(Dir.entries(Dir.pwd))
 end
 
+# Print output in color. For different filetypes will it use different colors
+# defined in the Config section of the source code. 
+def puts_colors(l)
+  fm = FileMagic.new
+  meta = fm.file(l).downcase
+
+  case 
+    when meta.include?('directory') 
+      then puts_dir l
+    when meta.include?('pdf') 
+      then puts_pdf l
+    when $media_types.any? { |s| meta.include? s }
+      then puts_media l
+    when $text_types.any? { |s| meta.include? s }
+      then puts_text l
+    else puts l
+  end
+end
+
 # Functions to be called by the user
 ###
 def mark_watched(fns)
@@ -44,11 +77,11 @@ def mark_unwatched(fns)
 end
 
 def list_watched
-  puts files.delete_if { |f| not File.stat(f).sticky? }
+  files.delete_if { |f| not File.stat(f).sticky? }.map { |n| puts_colors n }
 end
 
 def list_unwatched
-   puts files.delete_if { |f| File.stat(f).sticky? }
+  files.delete_if { |f| File.stat(f).sticky? }.map { |n| puts_colors n }
 end
 
 # Control Structures
