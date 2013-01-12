@@ -19,6 +19,7 @@ require 'filemagic'
 # Config
 ###
 
+# Types to check again via include?
 $media_types = ['avi', 'audio', 'mpeg', 'mp3']
 $text_types  = ['latex', 'text']
 
