@@ -77,6 +77,13 @@ def mark_unwatched(fns)
   chmod_list fns, "-t"
 end
 
+# TODO
+# mark() is going to replace the functions mar_watched() and mark_unwatched().
+# We should do a similar thing for list_watched() and list_unwatched().
+# def mark(fns, flags)
+#   chomd_list fns, flags
+# end
+
 def list_watched
   files.delete_if { |f| not File.stat(f).sticky? }.map { |n| puts_colors n }
 end
