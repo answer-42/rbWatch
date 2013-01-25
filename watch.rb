@@ -15,6 +15,7 @@ require 'filemagic'
 # * 02/01/2013 - v0.1
 # * 03/01/2013 - Added functionality for list of files.
 # * 12/01/2013 - Added colorfull output.
+# * 25/01/2013 - Added some abstraction
 
 # Config
 ###
@@ -69,20 +70,13 @@ end
 
 # Functions to be called by the user
 ###
-def mark_watched(fns)
-  chmod_list fns, "+t" 
-end
 
-def mark_unwatched(fns)
-  chmod_list fns, "-t"
-end
-
-# TODO
 # mark() is going to replace the functions mar_watched() and mark_unwatched().
 # We should do a similar thing for list_watched() and list_unwatched().
-# def mark(fns, flags)
-#   chomd_list fns, flags
-# end
+def mark(fns, flag)
+  chmod_list fns, "+t" if flag == :mark
+  chmod_list fns, "-t" if flag == :unmark
+end
 
 def list_watched
   files.delete_if { |f| not File.stat(f).sticky? }.map { |n| puts_colors n }
@@ -98,10 +92,10 @@ def handle_args(args)
   case
     # Mark as watched
     when args.length >= 2 && args[0] == "-w" 
-      then mark_watched args[1..-1] 
+      then mark args[1..-1], :mark
     # Unmark watched movie
     when args.length >= 2 && args[0] == "-u" 
-      then mark_unwatched args[1..-1]
+      then mark args[1..-1], :unmark
     # List watched movies
     when args.length == 1 && args[0] == "-lw" 
       then list_watched
