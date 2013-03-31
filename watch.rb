@@ -71,8 +71,7 @@ end
 # Functions to be called by the user
 ###
 
-# mark() is going to replace the functions mar_watched() and mark_unwatched().
-# We should do a similar thing for list_watched() and list_unwatched().
+# TODO We should do a similar thing for list_watched() and list_unwatched().
 def mark(fns, flag)
   chmod_list fns, "+t" if flag == :mark
   chmod_list fns, "-t" if flag == :unmark
